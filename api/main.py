@@ -34,8 +34,8 @@ async def predict(
         file: UploadFile = File(...)
 ):
     image = read_file_as_image(await file.read())
-    img_batch = image.
-    MODEL.predict(img_batch)
+    # img_batch = image.
+    # MODEL.predict(img_batch)
     return
 
 
