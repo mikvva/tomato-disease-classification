@@ -1,5 +1,11 @@
+import * as React from "react"
 import { useState, useEffect } from "react"
-import {makeStyles, withStyles} from "@mui/material/styles"
+import Dropzone from 'react-dropzone'
+
+import axios from "axios";
+
+import { useTheme } from '@emotion/react';
+
 import AppBar from "@mui/material/AppBar"
 import Toolbar from "@mui/material/Toolbar"
 import Typography from "@mui/material/Typography"
@@ -17,31 +23,40 @@ import TableBody from "@mui/material/TableBody"
 import TableHead from "@mui/material/TableHead"
 import TableRow from "@mui/material/TableRow"
 import TableCell from "@mui/material/TableCell"
-import Button from "@mui/material/Button"
 import CircularProgress from "@mui/material/CircularProgress"
+import Button from '@mui/material/Button';
+
+
 import image from "./bg.jpg"
 import thlogo from "./thlogo.png"
-import * as React from "react"
-import {DropzoneArea} from 'material-ui-dropzone'
-import ClearIcon from '@mui/icons-material/Clear';
-import { common } from "@mui/material/colors"
 
-
-const ColorButton = withStyles((theme) => ({
-    root: {
-        color: theme.palette.getContrastText(common.white),
-        bachgroundColor:common.white,
-        '&:hover' : {
-            backgroundColor:"#ffffffff7a",
-        },
-    },
-}))(Button);
-
-const axios = require("axios").default;
+import { useMemo } from 'react';
+import { css } from '@emotion/css';
 
 
 
-const useStyles = makeStyles((theme) => ({
+
+
+
+
+const useClasses = stylesElement => {
+  const theme = useTheme();
+  return useMemo(() => {
+    const rawClasses = typeof stylesElement === 'function'
+      ? stylesElement(theme)
+      : stylesElement;
+    const prepared = {};
+
+    Object.entries(rawClasses).forEach(([key, value = {}]) => {
+      prepared[key] = css(value);
+    });
+
+    return prepared;
+  }, [stylesElement, theme]);
+};
+
+
+const styles = theme => ({
     grow: {
         flexGrow: 1,
       },
@@ -61,37 +76,44 @@ const useStyles = makeStyles((theme) => ({
         height: 400,
       },
       paper: {
-        padding: theme.spacing(2),
+        padding: '0',
         margin: 'auto',
         maxWidth: 500,
       },
       gridContainer: {
-        justifyContent: "center",
-        padding: "4em 1em 0 1em",
+        margin: 'auto',
+        padding: "4em 0 1em 0",
+        maxHeight: "100pc"
       },
       mainContainer: {
+        display: 'flex',
         backgroundImage: `url(${image})`,
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',
         backgroundSize: 'cover',
-        height: "93vh",
-        marginTop: "8px",
+        height: '100vh',
       },
       imageCard: {
         margin: "auto",
-        maxWidth: 400,
-        height: 500,
-        backgroundColor: 'transparent',
+        maxWidth: 500,
+        maxHeight: 300,
+        backgroundColor: '#B7E3CC !important',
         boxShadow: '0px 9px 70px 0px rgb(0 0 0 / 30%) !important',
-        borderRadius: '15px',
+        alignItems: "center",
+        justifyContent: "center",
+        
       },
       imageCardEmpty: {
-        height: 'auto',
+        height: 400,
+        alignItems: 'center',
+        justifyContent: 'center',
+       
       },
       noImage: {
         margin: "auto",
         width: 400,
         height: "400 !important",
+       
       },
       input: {
         display: 'none',
@@ -118,7 +140,7 @@ const useStyles = makeStyles((theme) => ({
         borderColor: 'transparent !important',
         color: '#000000a6 !important',
         fontWeight: 'bolder',
-        padding: '1px 24px 1px 16px',
+        padding: '1px 16px 1px 16px',
       },
       tableCell1: {
         fontSize: '14px',
@@ -126,13 +148,13 @@ const useStyles = makeStyles((theme) => ({
         borderColor: 'transparent !important',
         color: '#000000a6 !important',
         fontWeight: 'bolder',
-        padding: '1px 24px 1px 16px',
+        padding: '1px 16px 1px 16px',
       },
       tableBody: {
         backgroundColor: 'transparent !important',
       },
-      text: {
-        color: 'white !important',
+      title: {
+        color: 'black !important',
         textAlign: 'center',
       },
       buttonGrid: {
@@ -145,23 +167,40 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'center',
         flexDirection: 'column',
         alignItems: 'center',
+        
       },
-      appbar: {
-        background: '#be6a77',
+      content:{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 200,
+        fontWeight: 'bolder',
+        fontSize: '18px',
+      },
+      appBar: {
+        background: '#B7E3CC',
         boxShadow: 'none',
-        color: 'white'
+        color: 'red',        
+      },
+      palette: {
+        primary: {
+          main: "#00ff00"
+        }
       },
       loader: {
-        color: '#be6a77 !important',
-      }
-}));
+        color: '#B7E3CC !important',
+      },
+     
+
+});
 
 // useState returns a pair: the current state value and a function that lets you update it.
 // The only argument to useState is the initial state
 
-export const ImageUpload = () => {
+export default function ImageUpload (){  
 
-    const classes = useStyles();
+  const classes = useClasses(styles);
+    
     const [selectedFile, setSelectedFile] = useState();
     const [preview, setPreview] = useState();
     const [data, setData] = useState();
@@ -231,25 +270,24 @@ export const ImageUpload = () => {
     }
 
     return (
-       <React.Fragment>
-        <AppBar positoin="static" className={classes.appbar}>
-            <Toolbar>
-                <Typography className={classes.title} variant="h6" noWrap>
-                    Tomato Disease Classification
-                </Typography> 
-                <div className={classes.grow} />
-                <Avatar src={thlogo}></Avatar>
-            </Toolbar>
-        </AppBar>
-        
+    <React.Fragment>
       <Container maxWidth={false} className={classes.mainContainer} disableGutters={true}>
-        <Grid
+      <AppBar position="static" className={classes.appBar}>
+        <Toolbar sx={{ backgroundColor: '#B7E3CC' }} >
+        <Avatar src={thlogo}></Avatar>
+        <div className={classes.grow}/>
+        <Typography className={classes.title} variant="h6" noWrap>
+            Tomato Health
+        </Typography>
+        </Toolbar>
+      </AppBar>
+      <Grid
           className={classes.gridContainer}
           container
           direction="row"
           justifyContent="center"
           alignItems="center"
-          spacing={2}
+          spacing={0}
         >
           <Grid item xs={12}>
             <Card className={`${classes.imageCard} ${!image ? classes.imageCardEmpty : ''}`}>
@@ -258,16 +296,25 @@ export const ImageUpload = () => {
                   className={classes.media}
                   image={preview}
                   component="image"
-                  title="Contemplative Reptile"
+                  title="Vida Contemplativa"
                 />
               </CardActionArea>
               }
               {!image && <CardContent className={classes.content}>
-                <DropzoneArea
-                  acceptedFiles={['image/*']}
-                  dropzoneText={"Drag and drop an image of a tomato plant leaf to process"}
-                  onChange={onSelectFile}
-                ></DropzoneArea>
+              <Dropzone
+                sx={{justifyContent:'center', alignItems:'center'}}
+                onDrop={onSelectFile}
+                // accept={{"image/*"}}
+              >
+                {({getRootProps, getInputProps, isDragActive, isDragReject}) => (
+                  <div {...getRootProps()}>
+                    <input {...getInputProps()} />
+                    {!isDragActive && 'Click here or drop a file to upload!'}
+                    {isDragActive && !isDragReject && "Drop it like it's hot!"}
+                    {isDragReject && "File type not accepted, sorry!"}
+                  </div>
+                )}
+              </Dropzone>
               </CardContent>}
               {data && <CardContent className={classes.detail}>
                 <TableContainer component={Paper} className={classes.tableContainer}>
@@ -290,7 +337,7 @@ export const ImageUpload = () => {
                 </TableContainer>
               </CardContent>}
               {isLoading && <CardContent className={classes.detail}>
-                <CircularProgress color="secondary" className={classes.loader}></CircularProgress>
+                <CircularProgress color="secondary" className={classes.loader} />
                 <Typography className={classes.title} variant="h6" noWrap>
                   Processing
                 </Typography>
@@ -298,14 +345,13 @@ export const ImageUpload = () => {
             </Card>
           </Grid>
           {data &&
-            <Grid item className={classes.buttonGrid}>
-
-              <ColorButton variant="contained" className={classes.clearButton} color="primary" component="span" size="large" onClick={clearData} startIcon={<ClearIcon fontSize="large"/>}>
+            <Grid item className={classes.buttonGrid} >
+              <Button variant="contained" className={classes.clearButton} color="primary" component="span" size="large" onClick={clearData} >
                 Clear
-              </ColorButton>
+              </Button>
             </Grid>}
         </Grid >
-      </Container >
-       </React.Fragment>
+      </Container>        
+    </React.Fragment>
     );
 };

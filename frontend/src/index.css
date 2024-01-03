@@ -12,10 +12,4 @@ code {
     monospace;
 }
 
-.MuiDropzoneArea-root {
-	background-color: transparent !important;
-}
-.MuiDropzoneArea-text, .MuiDropzoneArea-icon {
-  color: white !important;
-}
 
