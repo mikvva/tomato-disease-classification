@@ -34,11 +34,6 @@ import { useMemo } from 'react';
 import { css } from '@emotion/css';
 
 
-
-
-
-
-
 const useClasses = stylesElement => {
   const theme = useTheme();
   return useMemo(() => {
@@ -76,17 +71,15 @@ const styles = theme => ({
         height: 400,
       },
       paper: {
-        padding: '0',
+        paddin: 0,
         margin: 'auto',
         maxWidth: 500,
       },
       gridContainer: {
-        margin: 'auto',
         padding: "4em 0 1em 0",
-        maxHeight: "100pc"
+        justifyContent: 'center'
       },
       mainContainer: {
-        display: 'flex',
         backgroundImage: `url(${image})`,
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',
@@ -94,20 +87,15 @@ const styles = theme => ({
         height: '100vh',
       },
       imageCard: {
-        margin: "auto",
-        maxWidth: 500,
-        maxHeight: 300,
-        backgroundColor: '#B7E3CC !important',
+        margin: 'auto',
+        maxWidth: 400,
+        maxHeight: 500,
+        backgroundColor: 'transparent',
         boxShadow: '0px 9px 70px 0px rgb(0 0 0 / 30%) !important',
-        alignItems: "center",
-        justifyContent: "center",
-        
+        borderRadius: '85px'
       },
       imageCardEmpty: {
-        height: 400,
-        alignItems: 'center',
-        justifyContent: 'center',
-       
+        height: 'auto',       
       },
       noImage: {
         margin: "auto",
@@ -158,8 +146,8 @@ const styles = theme => ({
         textAlign: 'center',
       },
       buttonGrid: {
-        maxWidth: "416px",
-        width: "100%",
+        margin: 'auto',
+        maxWidth: "100pc"
       },
       detail: {
         backgroundColor: 'white',
@@ -167,20 +155,20 @@ const styles = theme => ({
         justifyContent: 'center',
         flexDirection: 'column',
         alignItems: 'center',
-        
       },
       content:{
         display: 'flex',
+        direction: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        height: 200,
+        height: '100',
         fontWeight: 'bolder',
         fontSize: '18px',
       },
       appBar: {
         background: '#B7E3CC',
         boxShadow: 'none',
-        color: 'red',        
+        color: 'white',        
       },
       palette: {
         primary: {
@@ -266,14 +254,14 @@ export default function ImageUpload (){
     };
 
     if(data) {
-        confidence = (parseFloat(data,confidence) * 100).toFixed(2);
+        confidence = (parseFloat(data.confidence) * 100).toFixed(2);
     }
 
     return (
     <React.Fragment>
       <Container maxWidth={false} className={classes.mainContainer} disableGutters={true}>
       <AppBar position="static" className={classes.appBar}>
-        <Toolbar sx={{ backgroundColor: '#B7E3CC' }} >
+        <Toolbar sx={{ backgroundColor: '#a6880f' }} >
         <Avatar src={thlogo}></Avatar>
         <div className={classes.grow}/>
         <Typography className={classes.title} variant="h6" noWrap>
@@ -287,7 +275,7 @@ export default function ImageUpload (){
           direction="row"
           justifyContent="center"
           alignItems="center"
-          spacing={0}
+          spacing={2}
         >
           <Grid item xs={12}>
             <Card className={`${classes.imageCard} ${!image ? classes.imageCardEmpty : ''}`}>
@@ -296,7 +284,6 @@ export default function ImageUpload (){
                   className={classes.media}
                   image={preview}
                   component="image"
-                  title="Vida Contemplativa"
                 />
               </CardActionArea>
               }
@@ -316,7 +303,8 @@ export default function ImageUpload (){
                 )}
               </Dropzone>
               </CardContent>}
-              {data && <CardContent className={classes.detail}>
+
+              {data && <CardContent className={classes.content}>
                 <TableContainer component={Paper} className={classes.tableContainer}>
                   <Table className={classes.table} size="small" aria-label="simple table">
                     <TableHead className={classes.tableHead}>
@@ -336,7 +324,7 @@ export default function ImageUpload (){
                   </Table>
                 </TableContainer>
               </CardContent>}
-              {isLoading && <CardContent className={classes.detail}>
+              {isLoading && <CardContent className={classes.content}>
                 <CircularProgress color="secondary" className={classes.loader} />
                 <Typography className={classes.title} variant="h6" noWrap>
                   Processing

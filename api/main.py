@@ -3,11 +3,27 @@ import uvicorn
 import numpy as np
 from io import BytesIO
 from PIL import Image
+from starlette.middleware.cors import CORSMiddleware
 import tensorflow as tf
 
 app = FastAPI()
 
-MODEL = tf.keras.models.load_model("../saved_models/1")
+origins = [
+    "http://localhost",
+    "http://localhost:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=['*'],
+    allow_headers=['*']
+)
+
+MODEL = tf.keras.models.load_model("../saved_models/tomato_model.h5")
+
+
 
 CLASS_NAMES = [
  'Tomato___Bacterial_spot',
@@ -33,8 +49,9 @@ def read_file_as_image(data) -> np.ndarray:
 
 @app.post("/predict")
 async def predict(
-        file: UploadFile = File(...)
+    file: UploadFile = File(...)
 ):
+    pass
     image = read_file_as_image(await file.read())
     img_batch = np.expand_dims(image, 0)
 

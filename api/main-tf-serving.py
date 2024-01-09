@@ -5,11 +5,11 @@ from io import BytesIO
 from PIL import Image
 import requests
 
-import tensorflow as tf
+# import tensorflow as tf
 
 app = FastAPI()
 
-endpoint = "https://localhost:8502/v1/models/tomatoes_model:predict"
+endpoint = "https://localhost:8502/saved_models/tomatoes_model:predict"
 
 CLASS_NAMES = [
  'Tomato___Bacterial_spot',
